@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>April 2026 - Complete Life Tracker</title>
-    <meta timestamp="2026-03-31 13:38" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -16,14 +15,12 @@
 
         :root {
             --primary: #6366f1;
-            --primary-dark: #4f46e5;
             --secondary: #ec4899;
             --accent: #f59e0b;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #06b6d4;
-            --purple: #8b5cf6;
             --dark: #0f172a;
             --darker: #020617;
             --card: #1e293b;
@@ -41,33 +38,18 @@
             color: var(--text);
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #ec4899 70%, #8b5cf6 100%);
             -webkit-background-clip: text;
@@ -77,7 +59,7 @@
 
         .month-info {
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -116,6 +98,7 @@
         .day-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: var(--primary);
         }
 
         .day-card.active {
@@ -123,9 +106,10 @@
             background: rgba(16, 185, 129, 0.1);
         }
 
+        /* FUTURE DATES NOW CLICKABLE - REMOVED future class opacity */
         .day-card.future {
-            opacity: 0.3;
-            cursor: not-allowed;
+            /* opacity: 0.3; */ /* REMOVED */
+            /* cursor: not-allowed; */ /* REMOVED */
         }
 
         .day-card.friday {
@@ -345,7 +329,7 @@
             transform: translateX(24px);
         }
 
-        /* Namaz Section */
+        /* Namaz */
         .namaz-row {
             display: flex;
             flex-direction: column;
@@ -390,7 +374,6 @@
         .namaz-btn.ada.active {
             background: var(--success);
             color: white;
-            box-shadow: 0 0 20px rgba(16,185,129,0.4);
         }
 
         .namaz-btn.qaza {
@@ -401,7 +384,6 @@
         .namaz-btn.qaza.active {
             background: var(--warning);
             color: white;
-            box-shadow: 0 0 20px rgba(245,158,11,0.4);
         }
 
         .jummah-badge {
@@ -475,13 +457,24 @@
         .option-btn.active {
             background: var(--primary);
             color: white;
-            transform: scale(1.05);
         }
 
-        /* Mobile Usage Slider */
+        /* Mobile Usage */
         .usage-slider {
             width: 100%;
             margin: 15px 0;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            outline: none;
+        }
+
+        .usage-slider::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
         }
 
         .usage-labels {
@@ -499,7 +492,6 @@
             margin-top: 10px;
             padding: 10px;
             border-radius: 8px;
-            transition: all 0.3s ease;
         }
 
         .usage-good { background: rgba(16,185,129,0.2); color: var(--success); }
@@ -544,7 +536,7 @@
         .m-status.good { background: rgba(16,185,129,0.2); color: var(--success); }
         .m-status.bad { background: rgba(239,68,68,0.2); color: var(--danger); }
 
-        /* Finance Accounts */
+        /* Finance - FIXED STYLING */
         .finance-tabs {
             display: flex;
             gap: 10px;
@@ -570,22 +562,148 @@
             border-color: transparent;
         }
 
-        .finance-content { display: none; }
-        .finance-content.active { display: block; animation: fadeIn 0.3s ease; }
+        .finance-content {
+            display: none;
+        }
+
+        .finance-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
 
         .account-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding: 15px;
+            padding: 20px;
             background: rgba(255,255,255,0.03);
             border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         .account-balance {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
+        }
+
+        .transactions-list {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+
+        .transactions-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .transactions-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            background: rgba(255,255,255,0.06);
+            transform: translateX(5px);
+        }
+
+        .transaction-income { border-left-color: var(--success); }
+        .transaction-expense { border-left-color: var(--danger); }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .transaction-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 0 15px;
+        }
+
+        .amount-income { color: var(--success); }
+        .amount-expense { color: var(--danger); }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .finance-inputs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .finance-input {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            background: rgba(15,23,42,0.8);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .finance-input:focus {
+            outline: none;
+            border-color: var(--info);
+        }
+
+        .finance-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-income {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .btn-expense {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
         }
 
         /* Save Button */
@@ -601,8 +719,6 @@
             cursor: pointer;
             margin-top: 25px;
             transition: all 0.4s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .save-btn:hover {
@@ -655,6 +771,7 @@
         @media (max-width: 768px) {
             .calendar-grid { grid-template-columns: repeat(2, 1fr); }
             h1 { font-size: 2rem; }
+            .finance-inputs { flex-direction: column; }
         }
     </style>
 </head>
@@ -665,7 +782,7 @@
         <h1>April 2026 Complete Tracker</h1>
         <div class="month-info">
             <span>1 April - 30 April 2026</span>
-            <span class="badge">All Tasks + 3 Finance Accounts</span>
+            <span class="badge">ALL DATES CLICKABLE</span>
         </div>
     </div>
 
@@ -690,7 +807,6 @@
         <!-- Health Tab -->
         <div class="tab-content active" id="tab-health">
             <div class="tasks-grid">
-                <!-- Brush -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(16,185,129,0.2);">🪥</div>
@@ -701,7 +817,6 @@
                     </div>
                 </div>
 
-                <!-- Facewash -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(6,182,212,0.2);">🧼</div>
@@ -712,7 +827,6 @@
                     </div>
                 </div>
 
-                <!-- Water Intake -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(59,130,246,0.2);">💧</div>
@@ -723,7 +837,6 @@
                     </div>
                 </div>
 
-                <!-- Challenge -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(139,92,246,0.2);">🏆</div>
@@ -739,15 +852,12 @@
         <!-- Spiritual Tab -->
         <div class="tab-content" id="tab-spiritual">
             <div class="tasks-grid">
-                <!-- Namaz with Toggle -->
                 <div class="task-card" id="namazCard">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(16,185,129,0.2);">🕌</div>
                         5 Namaz (10 pts)
-                        <span style="margin-right: auto; font-size: 0.8rem; color: var(--text-muted);">Ada:2 | Qaza:1 | Jummah:2</span>
                     </div>
                     
-                    <!-- Qaza Toggle -->
                     <div class="toggle-container">
                         <span class="toggle-label">Enable Qaza Option</span>
                         <div class="toggle-switch" id="qazaToggle" onclick="toggleQazaOption()">
@@ -755,7 +865,6 @@
                         </div>
                     </div>
 
-                    <!-- Qaza Counter (Hidden by default) -->
                     <div class="counter-box" id="qazaCounter" style="display: none;">
                         <span>Qaza Completed:</span>
                         <button class="counter-btn counter-minus" onclick="updateQazaCounter(-1)">−</button>
@@ -767,7 +876,6 @@
                     <div class="namaz-row" id="namazContainer"></div>
                 </div>
 
-                <!-- Tahajjud -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(245,158,11,0.2);">🌙</div>
@@ -778,7 +886,6 @@
                     </div>
                 </div>
 
-                <!-- Dua -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(236,72,153,0.2);">🤲</div>
@@ -789,7 +896,6 @@
                     </div>
                 </div>
 
-                <!-- Quran -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(245,158,11,0.2);">📖</div>
@@ -800,7 +906,6 @@
                     </div>
                 </div>
 
-                <!-- OTP -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(99,102,241,0.2);">📿</div>
@@ -811,7 +916,6 @@
                     </div>
                 </div>
 
-                <!-- M -->
                 <div class="task-card" style="border-color: rgba(236,72,153,0.3);">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(236,72,153,0.2);">Ⓜ️</div>
@@ -828,7 +932,6 @@
         <!-- Work Tab -->
         <div class="tab-content" id="tab-work">
             <div class="tasks-grid">
-                <!-- Mission with Toggle -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(139,92,246,0.2);">🎯</div>
@@ -842,13 +945,12 @@
                         </div>
                     </div>
 
-                    <input type="text" class="option-btn" id="missionInput" placeholder="Enter mission..." style="width: 100%; margin-bottom: 10px; text-align: left;">
+                    <input type="text" class="finance-input" id="missionInput" placeholder="Enter mission..." style="width: 100%; margin-bottom: 10px;">
                     <div class="options-row">
                         <button class="option-btn" id="btnMission" onclick="toggleSingle('mission')">Complete</button>
                     </div>
                 </div>
 
-                <!-- LinkedIn -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(10,102,194,0.2);">💼</div>
@@ -859,7 +961,6 @@
                     </div>
                 </div>
 
-                <!-- TikTok -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(0,242,234,0.2);">🎵</div>
@@ -871,7 +972,6 @@
                     </div>
                 </div>
 
-                <!-- Pinterest -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(230,0,35,0.2);">📌</div>
@@ -882,7 +982,6 @@
                     </div>
                 </div>
 
-                <!-- Snap -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(255,252,0,0.2);">👻</div>
@@ -893,7 +992,6 @@
                     </div>
                 </div>
 
-                <!-- Mobile Usage -->
                 <div class="task-card">
                     <div class="task-title">
                         <div class="task-icon" style="background: rgba(239,68,68,0.2);">📱</div>
@@ -911,7 +1009,7 @@
             </div>
         </div>
 
-        <!-- Finance Tab -->
+        <!-- Finance Tab - FIXED -->
         <div class="tab-content" id="tab-finance">
             <div class="finance-tabs">
                 <button class="finance-tab active" onclick="switchFinanceTab('mmm')">💼 MMM</button>
@@ -924,15 +1022,15 @@
                 <div class="account-header">
                     <div>
                         <div style="font-size: 0.9rem; color: var(--text-muted);">MMM Account</div>
-                        <div class="account-balance" id="balance-mmm">₨0</div>
+                        <div class="account-balance" id="balance-mmm" style="color: var(--success);">₨0</div>
                     </div>
                 </div>
-                <div id="transactions-mmm"></div>
-                <div class="options-row" style="margin-top: 15px;">
-                    <input type="text" class="option-btn" id="desc-mmm" placeholder="Description" style="flex: 2; text-align: left;">
-                    <input type="number" class="option-btn" id="amount-mmm" placeholder="Amount" style="flex: 1;">
-                    <button class="option-btn" style="background: var(--success);" onclick="addFinance('mmm', 'income')">+ Income</button>
-                    <button class="option-btn" style="background: var(--danger);" onclick="addFinance('mmm', 'expense')">- Expense</button>
+                <div class="transactions-list" id="transactions-mmm"></div>
+                <div class="finance-inputs">
+                    <input type="text" class="finance-input" id="desc-mmm" placeholder="Description (e.g. Salary, Food)">
+                    <input type="number" class="finance-input" id="amount-mmm" placeholder="Amount">
+                    <button class="finance-btn btn-income" onclick="addFinance('mmm', 'income')">+ Income</button>
+                    <button class="finance-btn btn-expense" onclick="addFinance('mmm', 'expense')">- Expense</button>
                 </div>
             </div>
 
@@ -941,15 +1039,15 @@
                 <div class="account-header">
                     <div>
                         <div style="font-size: 0.9rem; color: var(--text-muted);">Papa Account</div>
-                        <div class="account-balance" id="balance-papa">₨0</div>
+                        <div class="account-balance" id="balance-papa" style="color: var(--success);">₨0</div>
                     </div>
                 </div>
-                <div id="transactions-papa"></div>
-                <div class="options-row" style="margin-top: 15px;">
-                    <input type="text" class="option-btn" id="desc-papa" placeholder="Description" style="flex: 2; text-align: left;">
-                    <input type="number" class="option-btn" id="amount-papa" placeholder="Amount" style="flex: 1;">
-                    <button class="option-btn" style="background: var(--success);" onclick="addFinance('papa', 'income')">+ Income</button>
-                    <button class="option-btn" style="background: var(--danger);" onclick="addFinance('papa', 'expense')">- Expense</button>
+                <div class="transactions-list" id="transactions-papa"></div>
+                <div class="finance-inputs">
+                    <input type="text" class="finance-input" id="desc-papa" placeholder="Description (e.g. Salary, Food)">
+                    <input type="number" class="finance-input" id="amount-papa" placeholder="Amount">
+                    <button class="finance-btn btn-income" onclick="addFinance('papa', 'income')">+ Income</button>
+                    <button class="finance-btn btn-expense" onclick="addFinance('papa', 'expense')">- Expense</button>
                 </div>
             </div>
 
@@ -958,15 +1056,15 @@
                 <div class="account-header">
                     <div>
                         <div style="font-size: 0.9rem; color: var(--text-muted);">Original Account</div>
-                        <div class="account-balance" id="balance-original">₨0</div>
+                        <div class="account-balance" id="balance-original" style="color: var(--success);">₨0</div>
                     </div>
                 </div>
-                <div id="transactions-original"></div>
-                <div class="options-row" style="margin-top: 15px;">
-                    <input type="text" class="option-btn" id="desc-original" placeholder="Description" style="flex: 2; text-align: left;">
-                    <input type="number" class="option-btn" id="amount-original" placeholder="Amount" style="flex: 1;">
-                    <button class="option-btn" style="background: var(--success);" onclick="addFinance('original', 'income')">+ Income</button>
-                    <button class="option-btn" style="background: var(--danger);" onclick="addFinance('original', 'expense')">- Expense</button>
+                <div class="transactions-list" id="transactions-original"></div>
+                <div class="finance-inputs">
+                    <input type="text" class="finance-input" id="desc-original" placeholder="Description (e.g. Salary, Food)">
+                    <input type="number" class="finance-input" id="amount-original" placeholder="Amount">
+                    <button class="finance-btn btn-income" onclick="addFinance('original', 'income')">+ Income</button>
+                    <button class="finance-btn btn-expense" onclick="addFinance('original', 'expense')">- Expense</button>
                 </div>
             </div>
         </div>
@@ -977,17 +1075,14 @@
     <!-- Stats -->
     <div class="stats-section">
         <div class="stats-title">📊 April 2026 Overview</div>
-        <div class="stats-grid" id="statsGrid">
-            <!-- Generated by JS -->
-        </div>
+        <div class="stats-grid" id="statsGrid"></div>
     </div>
 </div>
 
 <script>
-    // April 2026 Configuration
+    // April 2026 - ALL DATES CLICKABLE FOR TESTING
     const MONTH_START = new Date('2026-04-01');
     const MONTH_END = new Date('2026-04-30');
-    const TODAY = new Date();
     
     let monthlyData = {};
     let currentDay = null;
@@ -1001,32 +1096,6 @@
         isha: 'Isha'
     };
 
-    // Task Points Configuration
-    const TASK_POINTS = {
-        brush: 2,
-        facewash: 2,
-        water: 3,
-        challenge: 3,
-        namaz_ada: 2,
-        namaz_qaza: 1,
-        namaz_jummah: 2,
-        tahajjud: 5,
-        dua: 5,
-        quran: 3,
-        otp: 3,
-        m_avoided: 5,
-        mission: 3,
-        linkedin: 3,
-        tiktok_post: 2,
-        pinterest: 2,
-        snap: 2,
-        mobile_3: 3,
-        mobile_1: 1,
-        mobile_0: 0,
-        qaza_counter: 2
-    };
-
-    // Initialize
     function init() {
         generateCalendar();
         generateNamazRows();
@@ -1044,14 +1113,14 @@
             
             const dayNum = date.getDate();
             const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-            const isFuture = date > TODAY;
-            const isFriday = date.getDay() === 5; // Friday check
+            const isFriday = date.getDay() === 5;
             const dateKey = date.toISOString().split('T')[0];
             
             const dayCard = document.createElement('div');
-            dayCard.className = `day-card ${isFuture ? 'future' : ''} ${isFriday ? 'friday' : ''}`;
+            // REMOVED isFuture check - ALL dates clickable
+            dayCard.className = `day-card ${isFriday ? 'friday' : ''}`;
             dayCard.id = `day-${dateKey}`;
-            dayCard.onclick = () => !isFuture && openDay(dateKey, dayNum, dayName, isFriday);
+            dayCard.onclick = () => openDay(dateKey, dayNum, dayName, isFriday);
             
             dayCard.innerHTML = `
                 ${isFriday ? '<div class="friday-badge">JUMMAH</div>' : ''}
@@ -1116,13 +1185,9 @@
             `${dayNum} April 2026 (${dayName})${isFriday ? ' - JUMMAH' : ''}`;
         document.getElementById('detailPanel').classList.add('active');
         
-        // Reset UI
         resetUI();
-        
-        // Setup Friday logic
         setupFridayUI(isFriday);
         
-        // Load data if exists
         if (monthlyData[dateKey]) {
             loadDayData(monthlyData[dateKey], isFriday);
         }
@@ -1135,25 +1200,18 @@
 
     function getEmptyDayData() {
         return {
-            // Health
             brush: false,
             facewash: false,
             water: false,
             challenge: false,
-            
-            // Spiritual
             namaz: { fajr: null, zuhr: null, asr: null, maghrib: null, isha: null },
             tahajjud: false,
             dua: false,
             quran: false,
             otp: false,
             m: false,
-            
-            // Qaza system
             qazaEnabled: false,
             qazaCompleted: 0,
-            
-            // Work
             missionEnabled: true,
             mission: { text: '', completed: false },
             linkedin: false,
@@ -1161,35 +1219,29 @@
             pinterest: false,
             snap: false,
             mobileHours: 4,
-            
-            // Finance - 3 independent accounts
             finance: {
                 mmm: { income: [], expense: [], balance: 0 },
                 papa: { income: [], expense: [], balance: 0 },
                 original: { income: [], expense: [], balance: 0 }
             },
-            
             efficiency: 0
         };
     }
 
     function resetUI() {
-        // Reset all buttons
         document.querySelectorAll('.option-btn, .namaz-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         
-        // Reset toggles
         document.getElementById('qazaToggle').classList.remove('active');
         document.getElementById('qazaCounter').style.display = 'none';
         document.getElementById('missionToggle').classList.add('active');
+        document.getElementById('btnMission').style.display = 'block';
         
-        // Reset inputs
         document.getElementById('missionInput').value = '';
         document.getElementById('mobileSlider').value = 4;
         updateMobileUsage(4);
         
-        // Reset M
         const mCheckbox = document.getElementById('mCheckbox');
         mCheckbox.classList.remove('active');
         mCheckbox.style.background = 'rgba(15,23,42,0.8)';
@@ -1197,7 +1249,6 @@
         document.getElementById('mStatus').textContent = '✓ Good! M avoided (+5 bonus)';
         document.getElementById('mStatus').className = 'm-status good';
         
-        // Reset finance inputs
         ['mmm', 'papa', 'original'].forEach(acc => {
             document.getElementById(`desc-${acc}`).value = '';
             document.getElementById(`amount-${acc}`).value = '';
@@ -1205,7 +1256,6 @@
             document.getElementById(`transactions-${acc}`).innerHTML = '';
         });
         
-        // Reset qaza count
         document.getElementById('qazaCount').textContent = '0';
     }
 
@@ -1228,20 +1278,18 @@
     }
 
     function loadDayData(data, isFriday) {
-        // Health
         if (data.brush) document.querySelector('[onclick="toggleSingle(\'brush\')"]')?.classList.add('active');
         if (data.facewash) document.querySelector('[onclick="toggleSingle(\'facewash\')"]')?.classList.add('active');
         if (data.water) document.querySelector('[onclick="toggleSingle(\'water\')"]')?.classList.add('active');
         if (data.challenge) document.querySelector('[onclick="toggleSingle(\'challenge\')"]')?.classList.add('active');
         
-        // Spiritual
         Object.keys(data.namaz).forEach(namaz => {
             const status = data.namaz[namaz];
             if (status) {
-                const btnText = status === 'jummah' ? 'Jummah (+2)' : (status === 'ada' ? 'Ada (+2)' : 'Qaza (+1)');
+                const btnText = status === 'jummah' ? 'Jummah' : (status === 'ada' ? 'Ada' : 'Qaza');
                 const buttons = document.querySelectorAll('.namaz-btn');
                 buttons.forEach(btn => {
-                    if (btn.textContent.includes(btnText.split(' ')[0])) {
+                    if (btn.textContent.includes(btnText)) {
                         btn.classList.add('active');
                     }
                 });
@@ -1253,7 +1301,6 @@
         if (data.quran) document.querySelector('[onclick="toggleSingle(\'quran\')"]')?.classList.add('active');
         if (data.otp) document.querySelector('[onclick="toggleSingle(\'otp\')"]')?.classList.add('active');
         
-        // M
         if (data.m) {
             const mCheckbox = document.getElementById('mCheckbox');
             mCheckbox.classList.add('active');
@@ -1263,13 +1310,11 @@
             document.getElementById('mStatus').className = 'm-status bad';
         }
         
-        // Qaza system
         if (data.qazaEnabled) {
             document.getElementById('qazaToggle').classList.add('active');
             document.getElementById('qazaCounter').style.display = 'flex';
             document.getElementById('qazaCount').textContent = data.qazaCompleted;
             
-            // Show qaza buttons
             document.querySelectorAll('.namaz-btn.qaza').forEach(btn => {
                 if (!isFriday || !btn.closest('#namaz-row-zuhr')) {
                     btn.style.display = 'block';
@@ -1277,7 +1322,6 @@
             });
         }
         
-        // Work
         if (data.missionEnabled) {
             document.getElementById('missionToggle').classList.add('active');
             document.getElementById('btnMission').style.display = 'block';
@@ -1295,11 +1339,9 @@
         if (data.pinterest) document.querySelector('[onclick="toggleSingle(\'pinterest\')"]')?.classList.add('active');
         if (data.snap) document.querySelector('[onclick="toggleSingle(\'snap\')"]')?.classList.add('active');
         
-        // Mobile usage
         document.getElementById('mobileSlider').value = data.mobileHours;
         updateMobileUsage(data.mobileHours);
         
-        // Finance
         ['mmm', 'papa', 'original'].forEach(acc => {
             updateFinanceDisplay(acc);
         });
@@ -1366,13 +1408,11 @@
         
         if (currentDayData.qazaEnabled) {
             counter.style.display = 'flex';
-            // Show all qaza buttons
             document.querySelectorAll('.namaz-btn.qaza').forEach(btn => {
                 btn.style.display = 'block';
             });
         } else {
             counter.style.display = 'none';
-            // Hide qaza buttons
             document.querySelectorAll('.namaz-btn.qaza').forEach(btn => {
                 btn.style.display = 'none';
             });
@@ -1435,21 +1475,24 @@
         }
     }
 
-    // Finance Functions
+    // Finance Functions - FIXED
     function addFinance(account, type) {
-        const desc = document.getElementById(`desc-${account}`).value.trim();
-        const amount = parseFloat(document.getElementById(`amount-${account}`).value) || 0;
+        const descInput = document.getElementById(`desc-${account}`);
+        const amountInput = document.getElementById(`amount-${account}`);
+        
+        const desc = descInput.value.trim();
+        const amount = parseFloat(amountInput.value) || 0;
         
         if (!desc || amount <= 0) {
-            alert('Please enter description and amount!');
+            alert('Please enter both description and amount!');
             return;
         }
         
         const transaction = {
             id: Date.now(),
-            desc,
-            amount,
-            type,
+            desc: desc,
+            amount: amount,
+            type: type,
             time: new Date().toLocaleTimeString()
         };
         
@@ -1461,9 +1504,8 @@
             currentDayData.finance[account].balance -= amount;
         }
         
-        // Clear inputs
-        document.getElementById(`desc-${account}`).value = '';
-        document.getElementById(`amount-${account}`).value = '';
+        descInput.value = '';
+        amountInput.value = '';
         
         updateFinanceDisplay(account);
     }
@@ -1473,26 +1515,49 @@
         const balanceEl = document.getElementById(`balance-${account}`);
         const transactionsEl = document.getElementById(`transactions-${account}`);
         
-        balanceEl.textContent = '₨' + data.balance.toLocaleString();
-        balanceEl.style.color = data.balance >= 0 ? 'var(--success)' : 'var(--danger)';
+        const balance = data.balance;
+        balanceEl.textContent = '₨' + balance.toLocaleString();
+        balanceEl.style.color = balance >= 0 ? 'var(--success)' : 'var(--danger)';
         
-        // Render transactions
         const allTransactions = [
             ...data.income.map(t => ({...t, type: 'income'})),
             ...data.expense.map(t => ({...t, type: 'expense'}))
         ].sort((a, b) => b.id - a.id);
         
         transactionsEl.innerHTML = allTransactions.map(t => `
-            <div class="transaction-item" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid ${t.type === 'income' ? 'var(--success)' : 'var(--danger)'};">
-                <div>
-                    <div style="font-weight: 600;">${t.desc}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">${t.time}</div>
+            <div class="transaction-item transaction-${t.type}">
+                <div class="transaction-info">
+                    <div class="transaction-title">${t.desc}</div>
+                    <div class="transaction-meta">${t.time} • ${t.type.toUpperCase()}</div>
                 </div>
-                <div style="font-weight: 700; color: ${t.type === 'income' ? 'var(--success)' : 'var(--danger)'};">
+                <div class="transaction-amount amount-${t.type}">
                     ${t.type === 'income' ? '+' : '-'}₨${t.amount.toLocaleString()}
                 </div>
+                <button class="delete-btn" onclick="deleteTransaction('${account}', '${t.type}', ${t.id})">×</button>
             </div>
         `).join('');
+        
+        if (allTransactions.length === 0) {
+            transactionsEl.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">No transactions yet</div>';
+        }
+    }
+
+    function deleteTransaction(account, type, id) {
+        const list = currentDayData.finance[account][type];
+        const index = list.findIndex(t => t.id === id);
+        
+        if (index > -1) {
+            const amount = list[index].amount;
+            list.splice(index, 1);
+            
+            if (type === 'income') {
+                currentDayData.finance[account].balance -= amount;
+            } else {
+                currentDayData.finance[account].balance += amount;
+            }
+            
+            updateFinanceDisplay(account);
+        }
     }
 
     // Calculate Efficiency
@@ -1500,31 +1565,31 @@
         let score = 0;
         let maxScore = 0;
         
-        // Health (11 points)
+        // Health (10 points)
         if (currentDayData.brush) score += 2;
         if (currentDayData.facewash) score += 2;
         if (currentDayData.water) score += 3;
         if (currentDayData.challenge) score += 3;
-        maxScore += 11;
+        maxScore += 10;
         
-        // Namaz (10 points - 5 prayers × 2)
+        // Namaz (10 points)
         Object.entries(currentDayData.namaz).forEach(([namaz, status]) => {
             if (status === 'ada' || status === 'jummah') score += 2;
             else if (status === 'qaza' && currentDayData.qazaEnabled) score += 1;
         });
         maxScore += 10;
         
-        // Qaza counter (bonus)
+        // Qaza counter bonus
         if (currentDayData.qazaEnabled) {
             score += currentDayData.qazaCompleted * 2;
         }
         
-        // Spiritual (18 points)
+        // Spiritual (16 points)
         if (currentDayData.tahajjud) score += 5;
         if (currentDayData.dua) score += 5;
         if (currentDayData.quran) score += 3;
         if (currentDayData.otp) score += 3;
-        maxScore += 18;
+        maxScore += 16;
         
         // M (5 points if avoided)
         if (!currentDayData.m) score += 5;
@@ -1564,7 +1629,7 @@
         updateMonthlyStats();
         
         const btn = document.querySelector('.save-btn');
-        btn.innerHTML = '✅ Saved!';
+        btn.innerHTML = '✅ Saved Successfully!';
         setTimeout(() => {
             btn.innerHTML = '💾 Save Complete Day';
             closeDetail();
@@ -1602,56 +1667,46 @@
         let totalEfficiency = 0;
         let daysCount = 0;
         
-        // Finance totals
         let mmmBalance = 0;
         let papaBalance = 0;
         let originalBalance = 0;
         
         Object.values(monthlyData).forEach(day => {
-            // Health
             if (day.brush) healthPoints += 2;
             if (day.facewash) healthPoints += 2;
             if (day.water) healthPoints += 3;
             if (day.challenge) healthPoints += 3;
             
-            // Namaz
             Object.values(day.namaz).forEach(status => {
                 if (status === 'ada' || status === 'jummah') namazPoints += 2;
                 else if (status === 'qaza') namazPoints += 1;
             });
             
-            // Spiritual
             if (day.tahajjud) spiritualPoints += 5;
             if (day.dua) spiritualPoints += 5;
             if (day.quran) spiritualPoints += 3;
             if (day.otp) spiritualPoints += 3;
             
-            // Qaza
             qazaDone += day.qazaCompleted || 0;
             
-            // M
             if (!day.m) mAvoided++;
             
-            // Work
             if (day.linkedin) workTasks++;
-            if (day.tiktok.post1) workTasks++;
-            if (day.tiktok.post2) workTasks++;
+            if (day.tiktok?.post1) workTasks++;
+            if (day.tiktok?.post2) workTasks++;
             if (day.pinterest) workTasks++;
             if (day.snap) workTasks++;
             
-            // Efficiency
             if (day.efficiency > 0) {
                 totalEfficiency += day.efficiency;
                 daysCount++;
             }
             
-            // Finance (independent accounts)
             mmmBalance += day.finance?.mmm?.balance || 0;
             papaBalance += day.finance?.papa?.balance || 0;
             originalBalance += day.finance?.original?.balance || 0;
         });
         
-        // Update display
         document.getElementById('statHealth').textContent = healthPoints;
         document.getElementById('statNamaz').textContent = namazPoints;
         document.getElementById('statSpiritual').textContent = spiritualPoints;
