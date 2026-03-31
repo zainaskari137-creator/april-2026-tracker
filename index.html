@@ -1,1 +1,1685 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>April 2026 - Complete Life Tracker</title>
+    <meta timestamp="2026-03-31 13:38" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --purple: #8b5cf6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Poppins', 'Noto Nastaliq Urdu', sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e1b4b 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+            color: var(--text);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #ec4899 70%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .month-info {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Calendar */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .day-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            min-height: 110px;
+            position: relative;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .day-card.active {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .day-card.future {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .day-card.friday {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .day-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .day-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .friday-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: var(--warning);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .efficiency-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            padding: 6px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .efficiency-high { background: var(--success); color: white; }
+        .efficiency-medium { background: var(--warning); color: white; }
+        .efficiency-low { background: var(--danger); color: white; }
+        .efficiency-none { background: rgba(71, 85, 105, 0.5); color: var(--text-muted); }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        .detail-panel.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .close-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid var(--border);
+            color: var(--text);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover { border-color: var(--primary); }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Tasks Grid */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .task-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--success);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        /* Namaz Section */
+        .namaz-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .namaz-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+        }
+
+        .namaz-name {
+            font-weight: 600;
+        }
+
+        .namaz-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .namaz-btn {
+            padding: 8px 14px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(15,23,42,0.8);
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .namaz-btn.ada {
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .namaz-btn.ada.active {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 0 20px rgba(16,185,129,0.4);
+        }
+
+        .namaz-btn.qaza {
+            border-color: rgba(245, 158, 11, 0.3);
+            color: var(--warning);
+        }
+
+        .namaz-btn.qaza.active {
+            background: var(--warning);
+            color: white;
+            box-shadow: 0 0 20px rgba(245,158,11,0.4);
+        }
+
+        .jummah-badge {
+            background: var(--warning);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Counter */
+        .counter-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+        }
+
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .counter-minus {
+            background: var(--danger);
+            color: white;
+        }
+
+        .counter-plus {
+            background: var(--success);
+            color: white;
+        }
+
+        .counter-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        /* Options */
+        .options-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(15,23,42,0.8);
+            color: var(--text);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .option-btn:hover { border-color: var(--primary); }
+        .option-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Mobile Usage Slider */
+        .usage-slider {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .usage-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .usage-value {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .usage-good { background: rgba(16,185,129,0.2); color: var(--success); }
+        .usage-medium { background: rgba(245,158,11,0.2); color: var(--warning); }
+        .usage-bad { background: rgba(239,68,68,0.2); color: var(--danger); }
+
+        /* M Section */
+        .m-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .m-checkbox {
+            width: 80px;
+            height: 80px;
+            border: 3px solid var(--secondary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            background: rgba(15,23,42,0.8);
+        }
+
+        .m-checkbox:hover { transform: scale(1.1); }
+        .m-checkbox.active { background: var(--secondary); color: white; }
+
+        .m-status {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .m-status.good { background: rgba(16,185,129,0.2); color: var(--success); }
+        .m-status.bad { background: rgba(239,68,68,0.2); color: var(--danger); }
+
+        /* Finance Accounts */
+        .finance-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .finance-tab {
+            padding: 12px 24px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid var(--border);
+            color: var(--text);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .finance-tab:hover { border-color: var(--info); }
+        .finance-tab.active {
+            background: var(--info);
+            color: white;
+            border-color: transparent;
+        }
+
+        .finance-content { display: none; }
+        .finance-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+
+        .account-balance {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        /* Save Button */
+        .save-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(99,102,241,0.4);
+        }
+
+        /* Stats */
+        .stats-section {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .stats-title {
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--accent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-grid { grid-template-columns: repeat(2, 1fr); }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>April 2026 Complete Tracker</h1>
+        <div class="month-info">
+            <span>1 April - 30 April 2026</span>
+            <span class="badge">All Tasks + 3 Finance Accounts</span>
+        </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar-grid" id="calendarGrid"></div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <div class="detail-title" id="selectedDateTitle">1 April 2026</div>
+            <button class="close-btn" onclick="closeDetail()">✕ Close</button>
+        </div>
+
+        <!-- Main Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('health')">💪 Health</button>
+            <button class="tab-btn" onclick="switchTab('spiritual')">🕌 Spiritual</button>
+            <button class="tab-btn" onclick="switchTab('work')">💼 Work</button>
+            <button class="tab-btn" onclick="switchTab('finance')">💰 Finance</button>
+        </div>
+
+        <!-- Health Tab -->
+        <div class="tab-content active" id="tab-health">
+            <div class="tasks-grid">
+                <!-- Brush -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(16,185,129,0.2);">🪥</div>
+                        Brush (+2)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('brush')">Done</button>
+                    </div>
+                </div>
+
+                <!-- Facewash -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(6,182,212,0.2);">🧼</div>
+                        Facewash (+2)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('facewash')">Done</button>
+                    </div>
+                </div>
+
+                <!-- Water Intake -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(59,130,246,0.2);">💧</div>
+                        Water Intake (+3)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('water')">Completed</button>
+                    </div>
+                </div>
+
+                <!-- Challenge -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(139,92,246,0.2);">🏆</div>
+                        Challenge (+3)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('challenge')">Completed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spiritual Tab -->
+        <div class="tab-content" id="tab-spiritual">
+            <div class="tasks-grid">
+                <!-- Namaz with Toggle -->
+                <div class="task-card" id="namazCard">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(16,185,129,0.2);">🕌</div>
+                        5 Namaz (10 pts)
+                        <span style="margin-right: auto; font-size: 0.8rem; color: var(--text-muted);">Ada:2 | Qaza:1 | Jummah:2</span>
+                    </div>
+                    
+                    <!-- Qaza Toggle -->
+                    <div class="toggle-container">
+                        <span class="toggle-label">Enable Qaza Option</span>
+                        <div class="toggle-switch" id="qazaToggle" onclick="toggleQazaOption()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <!-- Qaza Counter (Hidden by default) -->
+                    <div class="counter-box" id="qazaCounter" style="display: none;">
+                        <span>Qaza Completed:</span>
+                        <button class="counter-btn counter-minus" onclick="updateQazaCounter(-1)">−</button>
+                        <span class="counter-value" id="qazaCount">0</span>
+                        <button class="counter-btn counter-plus" onclick="updateQazaCounter(1)">+</button>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">(+2 each)</span>
+                    </div>
+
+                    <div class="namaz-row" id="namazContainer"></div>
+                </div>
+
+                <!-- Tahajjud -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(245,158,11,0.2);">🌙</div>
+                        Tahajjud (+5)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('tahajjud')">Prayed</button>
+                    </div>
+                </div>
+
+                <!-- Dua -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(236,72,153,0.2);">🤲</div>
+                        Dua (+5)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('dua')">Done</button>
+                    </div>
+                </div>
+
+                <!-- Quran -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(245,158,11,0.2);">📖</div>
+                        Quran - 1 Raku (+3)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('quran')">Read</button>
+                    </div>
+                </div>
+
+                <!-- OTP -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(99,102,241,0.2);">📿</div>
+                        OTP (+3)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('otp')">Done</button>
+                    </div>
+                </div>
+
+                <!-- M -->
+                <div class="task-card" style="border-color: rgba(236,72,153,0.3);">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(236,72,153,0.2);">Ⓜ️</div>
+                        M Status (+5 if avoided)
+                    </div>
+                    <div class="m-container">
+                        <div class="m-checkbox" id="mCheckbox" onclick="toggleM()">M</div>
+                        <div class="m-status good" id="mStatus">✓ Good! M avoided (+5 bonus)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Work Tab -->
+        <div class="tab-content" id="tab-work">
+            <div class="tasks-grid">
+                <!-- Mission with Toggle -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(139,92,246,0.2);">🎯</div>
+                        Mission (+3)
+                    </div>
+                    
+                    <div class="toggle-container">
+                        <span class="toggle-label">Include Mission in Score</span>
+                        <div class="toggle-switch active" id="missionToggle" onclick="toggleMissionOption()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <input type="text" class="option-btn" id="missionInput" placeholder="Enter mission..." style="width: 100%; margin-bottom: 10px; text-align: left;">
+                    <div class="options-row">
+                        <button class="option-btn" id="btnMission" onclick="toggleSingle('mission')">Complete</button>
+                    </div>
+                </div>
+
+                <!-- LinkedIn -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(10,102,194,0.2);">💼</div>
+                        LinkedIn (+3)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('linkedin')">Posted</button>
+                    </div>
+                </div>
+
+                <!-- TikTok -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(0,242,234,0.2);">🎵</div>
+                        TikTok (2×2 = 4 pts)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleTask('tiktok', 'post1')">Post 1 (+2)</button>
+                        <button class="option-btn" onclick="toggleTask('tiktok', 'post2')">Post 2 (+2)</button>
+                    </div>
+                </div>
+
+                <!-- Pinterest -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(230,0,35,0.2);">📌</div>
+                        Pinterest (+2)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('pinterest')">Posted</button>
+                    </div>
+                </div>
+
+                <!-- Snap -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(255,252,0,0.2);">👻</div>
+                        Snap (+2)
+                    </div>
+                    <div class="options-row">
+                        <button class="option-btn" onclick="toggleSingle('snap')">Posted</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Usage -->
+                <div class="task-card">
+                    <div class="task-title">
+                        <div class="task-icon" style="background: rgba(239,68,68,0.2);">📱</div>
+                        Mobile Usage (+3)
+                    </div>
+                    <input type="range" class="usage-slider" id="mobileSlider" min="0" max="12" step="0.5" value="4" oninput="updateMobileUsage(this.value)">
+                    <div class="usage-labels">
+                        <span>0h</span>
+                        <span>4h</span>
+                        <span>8h</span>
+                        <span>12h</span>
+                    </div>
+                    <div class="usage-value usage-good" id="mobileValue">4 hours = 3 points</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finance Tab -->
+        <div class="tab-content" id="tab-finance">
+            <div class="finance-tabs">
+                <button class="finance-tab active" onclick="switchFinanceTab('mmm')">💼 MMM</button>
+                <button class="finance-tab" onclick="switchFinanceTab('papa')">👨 Papa</button>
+                <button class="finance-tab" onclick="switchFinanceTab('original')">💎 Original</button>
+            </div>
+
+            <!-- MMM Account -->
+            <div class="finance-content active" id="finance-mmm">
+                <div class="account-header">
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);">MMM Account</div>
+                        <div class="account-balance" id="balance-mmm">₨0</div>
+                    </div>
+                </div>
+                <div id="transactions-mmm"></div>
+                <div class="options-row" style="margin-top: 15px;">
+                    <input type="text" class="option-btn" id="desc-mmm" placeholder="Description" style="flex: 2; text-align: left;">
+                    <input type="number" class="option-btn" id="amount-mmm" placeholder="Amount" style="flex: 1;">
+                    <button class="option-btn" style="background: var(--success);" onclick="addFinance('mmm', 'income')">+ Income</button>
+                    <button class="option-btn" style="background: var(--danger);" onclick="addFinance('mmm', 'expense')">- Expense</button>
+                </div>
+            </div>
+
+            <!-- Papa Account -->
+            <div class="finance-content" id="finance-papa">
+                <div class="account-header">
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);">Papa Account</div>
+                        <div class="account-balance" id="balance-papa">₨0</div>
+                    </div>
+                </div>
+                <div id="transactions-papa"></div>
+                <div class="options-row" style="margin-top: 15px;">
+                    <input type="text" class="option-btn" id="desc-papa" placeholder="Description" style="flex: 2; text-align: left;">
+                    <input type="number" class="option-btn" id="amount-papa" placeholder="Amount" style="flex: 1;">
+                    <button class="option-btn" style="background: var(--success);" onclick="addFinance('papa', 'income')">+ Income</button>
+                    <button class="option-btn" style="background: var(--danger);" onclick="addFinance('papa', 'expense')">- Expense</button>
+                </div>
+            </div>
+
+            <!-- Original Account -->
+            <div class="finance-content" id="finance-original">
+                <div class="account-header">
+                    <div>
+                        <div style="font-size: 0.9rem; color: var(--text-muted);">Original Account</div>
+                        <div class="account-balance" id="balance-original">₨0</div>
+                    </div>
+                </div>
+                <div id="transactions-original"></div>
+                <div class="options-row" style="margin-top: 15px;">
+                    <input type="text" class="option-btn" id="desc-original" placeholder="Description" style="flex: 2; text-align: left;">
+                    <input type="number" class="option-btn" id="amount-original" placeholder="Amount" style="flex: 1;">
+                    <button class="option-btn" style="background: var(--success);" onclick="addFinance('original', 'income')">+ Income</button>
+                    <button class="option-btn" style="background: var(--danger);" onclick="addFinance('original', 'expense')">- Expense</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="save-btn" onclick="saveDay()">💾 Save Complete Day</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-section">
+        <div class="stats-title">📊 April 2026 Overview</div>
+        <div class="stats-grid" id="statsGrid">
+            <!-- Generated by JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // April 2026 Configuration
+    const MONTH_START = new Date('2026-04-01');
+    const MONTH_END = new Date('2026-04-30');
+    const TODAY = new Date();
+    
+    let monthlyData = {};
+    let currentDay = null;
+    let currentDayData = null;
+
+    const NAMAZ_NAMES = {
+        fajr: 'Fajr',
+        zuhr: 'Zuhr',
+        asr: 'Asr',
+        maghrib: 'Maghrib',
+        isha: 'Isha'
+    };
+
+    // Task Points Configuration
+    const TASK_POINTS = {
+        brush: 2,
+        facewash: 2,
+        water: 3,
+        challenge: 3,
+        namaz_ada: 2,
+        namaz_qaza: 1,
+        namaz_jummah: 2,
+        tahajjud: 5,
+        dua: 5,
+        quran: 3,
+        otp: 3,
+        m_avoided: 5,
+        mission: 3,
+        linkedin: 3,
+        tiktok_post: 2,
+        pinterest: 2,
+        snap: 2,
+        mobile_3: 3,
+        mobile_1: 1,
+        mobile_0: 0,
+        qaza_counter: 2
+    };
+
+    // Initialize
+    function init() {
+        generateCalendar();
+        generateNamazRows();
+        generateStatsGrid();
+        loadData();
+        updateMonthlyStats();
+    }
+
+    function generateCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        
+        for (let i = 0; i < 30; i++) {
+            const date = new Date(MONTH_START);
+            date.setDate(date.getDate() + i);
+            
+            const dayNum = date.getDate();
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+            const isFuture = date > TODAY;
+            const isFriday = date.getDay() === 5; // Friday check
+            const dateKey = date.toISOString().split('T')[0];
+            
+            const dayCard = document.createElement('div');
+            dayCard.className = `day-card ${isFuture ? 'future' : ''} ${isFriday ? 'friday' : ''}`;
+            dayCard.id = `day-${dateKey}`;
+            dayCard.onclick = () => !isFuture && openDay(dateKey, dayNum, dayName, isFriday);
+            
+            dayCard.innerHTML = `
+                ${isFriday ? '<div class="friday-badge">JUMMAH</div>' : ''}
+                <div class="day-number">${dayNum}</div>
+                <div class="day-name">${dayName}</div>
+                <div class="efficiency-badge efficiency-none" id="badge-${dateKey}">--</div>
+            `;
+            
+            grid.appendChild(dayCard);
+        }
+    }
+
+    function generateNamazRows() {
+        const container = document.getElementById('namazContainer');
+        container.innerHTML = '';
+        
+        Object.keys(NAMAZ_NAMES).forEach(namaz => {
+            const row = document.createElement('div');
+            row.className = 'namaz-item';
+            row.id = `namaz-row-${namaz}`;
+            row.innerHTML = `
+                <span class="namaz-name">${NAMAZ_NAMES[namaz]}</span>
+                <div class="namaz-options" id="options-${namaz}">
+                    <button class="namaz-btn ada" onclick="toggleNamaz('${namaz}', 'ada')">Ada (+2)</button>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function generateStatsGrid() {
+        const grid = document.getElementById('statsGrid');
+        const stats = [
+            { id: 'statHealth', label: 'Health Points', color: '#10b981' },
+            { id: 'statNamaz', label: 'Namaz Points', color: '#10b981' },
+            { id: 'statSpiritual', label: 'Spiritual', color: '#f59e0b' },
+            { id: 'statWork', label: 'Work Tasks', color: '#6366f1' },
+            { id: 'statQaza', label: 'Qaza Done', color: '#f59e0b' },
+            { id: 'statMAvoided', label: 'M Avoided', color: '#ec4899' },
+            { id: 'statMMM', label: 'MMM Balance', color: '#06b6d4' },
+            { id: 'statPapa', label: 'Papa Balance', color: '#06b6d4' },
+            { id: 'statOriginal', label: 'Original', color: '#06b6d4' },
+            { id: 'statEfficiency', label: 'Avg Efficiency', color: '#fbbf24' }
+        ];
+        
+        stats.forEach(stat => {
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            card.innerHTML = `
+                <div class="stat-value" style="color: ${stat.color};" id="${stat.id}">0</div>
+                <div class="stat-label">${stat.label}</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openDay(dateKey, dayNum, dayName, isFriday) {
+        currentDay = dateKey;
+        currentDayData = monthlyData[dateKey] || getEmptyDayData();
+        
+        document.getElementById('selectedDateTitle').textContent = 
+            `${dayNum} April 2026 (${dayName})${isFriday ? ' - JUMMAH' : ''}`;
+        document.getElementById('detailPanel').classList.add('active');
+        
+        // Reset UI
+        resetUI();
+        
+        // Setup Friday logic
+        setupFridayUI(isFriday);
+        
+        // Load data if exists
+        if (monthlyData[dateKey]) {
+            loadDayData(monthlyData[dateKey], isFriday);
+        }
+        
+        window.scrollTo({ 
+            top: document.getElementById('detailPanel').offsetTop - 20, 
+            behavior: 'smooth' 
+        });
+    }
+
+    function getEmptyDayData() {
+        return {
+            // Health
+            brush: false,
+            facewash: false,
+            water: false,
+            challenge: false,
+            
+            // Spiritual
+            namaz: { fajr: null, zuhr: null, asr: null, maghrib: null, isha: null },
+            tahajjud: false,
+            dua: false,
+            quran: false,
+            otp: false,
+            m: false,
+            
+            // Qaza system
+            qazaEnabled: false,
+            qazaCompleted: 0,
+            
+            // Work
+            missionEnabled: true,
+            mission: { text: '', completed: false },
+            linkedin: false,
+            tiktok: { post1: false, post2: false },
+            pinterest: false,
+            snap: false,
+            mobileHours: 4,
+            
+            // Finance - 3 independent accounts
+            finance: {
+                mmm: { income: [], expense: [], balance: 0 },
+                papa: { income: [], expense: [], balance: 0 },
+                original: { income: [], expense: [], balance: 0 }
+            },
+            
+            efficiency: 0
+        };
+    }
+
+    function resetUI() {
+        // Reset all buttons
+        document.querySelectorAll('.option-btn, .namaz-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Reset toggles
+        document.getElementById('qazaToggle').classList.remove('active');
+        document.getElementById('qazaCounter').style.display = 'none';
+        document.getElementById('missionToggle').classList.add('active');
+        
+        // Reset inputs
+        document.getElementById('missionInput').value = '';
+        document.getElementById('mobileSlider').value = 4;
+        updateMobileUsage(4);
+        
+        // Reset M
+        const mCheckbox = document.getElementById('mCheckbox');
+        mCheckbox.classList.remove('active');
+        mCheckbox.style.background = 'rgba(15,23,42,0.8)';
+        mCheckbox.style.color = 'var(--secondary)';
+        document.getElementById('mStatus').textContent = '✓ Good! M avoided (+5 bonus)';
+        document.getElementById('mStatus').className = 'm-status good';
+        
+        // Reset finance inputs
+        ['mmm', 'papa', 'original'].forEach(acc => {
+            document.getElementById(`desc-${acc}`).value = '';
+            document.getElementById(`amount-${acc}`).value = '';
+            document.getElementById(`balance-${acc}`).textContent = '₨0';
+            document.getElementById(`transactions-${acc}`).innerHTML = '';
+        });
+        
+        // Reset qaza count
+        document.getElementById('qazaCount').textContent = '0';
+    }
+
+    function setupFridayUI(isFriday) {
+        const zuhrRow = document.getElementById('namaz-row-zuhr');
+        const zuhrOptions = document.getElementById('options-zuhr');
+        
+        if (isFriday) {
+            zuhrRow.querySelector('.namaz-name').innerHTML = 'Jummah <span class="jummah-badge">FRIDAY</span>';
+            zuhrOptions.innerHTML = `
+                <button class="namaz-btn ada" onclick="toggleNamaz('zuhr', 'jummah')">Jummah (+2)</button>
+            `;
+        } else {
+            zuhrRow.querySelector('.namaz-name').textContent = 'Zuhr';
+            zuhrOptions.innerHTML = `
+                <button class="namaz-btn ada" onclick="toggleNamaz('zuhr', 'ada')">Ada (+2)</button>
+                <button class="namaz-btn qaza" onclick="toggleNamaz('zuhr', 'qaza')" style="display: none;" id="qaza-zuhr">Qaza (+1)</button>
+            `;
+        }
+    }
+
+    function loadDayData(data, isFriday) {
+        // Health
+        if (data.brush) document.querySelector('[onclick="toggleSingle(\'brush\')"]')?.classList.add('active');
+        if (data.facewash) document.querySelector('[onclick="toggleSingle(\'facewash\')"]')?.classList.add('active');
+        if (data.water) document.querySelector('[onclick="toggleSingle(\'water\')"]')?.classList.add('active');
+        if (data.challenge) document.querySelector('[onclick="toggleSingle(\'challenge\')"]')?.classList.add('active');
+        
+        // Spiritual
+        Object.keys(data.namaz).forEach(namaz => {
+            const status = data.namaz[namaz];
+            if (status) {
+                const btnText = status === 'jummah' ? 'Jummah (+2)' : (status === 'ada' ? 'Ada (+2)' : 'Qaza (+1)');
+                const buttons = document.querySelectorAll('.namaz-btn');
+                buttons.forEach(btn => {
+                    if (btn.textContent.includes(btnText.split(' ')[0])) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        });
+        
+        if (data.tahajjud) document.querySelector('[onclick="toggleSingle(\'tahajjud\')"]')?.classList.add('active');
+        if (data.dua) document.querySelector('[onclick="toggleSingle(\'dua\')"]')?.classList.add('active');
+        if (data.quran) document.querySelector('[onclick="toggleSingle(\'quran\')"]')?.classList.add('active');
+        if (data.otp) document.querySelector('[onclick="toggleSingle(\'otp\')"]')?.classList.add('active');
+        
+        // M
+        if (data.m) {
+            const mCheckbox = document.getElementById('mCheckbox');
+            mCheckbox.classList.add('active');
+            mCheckbox.style.background = 'var(--secondary)';
+            mCheckbox.style.color = 'white';
+            document.getElementById('mStatus').textContent = '✗ Bad! M done (no bonus)';
+            document.getElementById('mStatus').className = 'm-status bad';
+        }
+        
+        // Qaza system
+        if (data.qazaEnabled) {
+            document.getElementById('qazaToggle').classList.add('active');
+            document.getElementById('qazaCounter').style.display = 'flex';
+            document.getElementById('qazaCount').textContent = data.qazaCompleted;
+            
+            // Show qaza buttons
+            document.querySelectorAll('.namaz-btn.qaza').forEach(btn => {
+                if (!isFriday || !btn.closest('#namaz-row-zuhr')) {
+                    btn.style.display = 'block';
+                }
+            });
+        }
+        
+        // Work
+        if (data.missionEnabled) {
+            document.getElementById('missionToggle').classList.add('active');
+            document.getElementById('btnMission').style.display = 'block';
+        } else {
+            document.getElementById('missionToggle').classList.remove('active');
+            document.getElementById('btnMission').style.display = 'none';
+        }
+        
+        if (data.mission.text) document.getElementById('missionInput').value = data.mission.text;
+        if (data.mission.completed) document.getElementById('btnMission')?.classList.add('active');
+        
+        if (data.linkedin) document.querySelector('[onclick="toggleSingle(\'linkedin\')"]')?.classList.add('active');
+        if (data.tiktok.post1) document.querySelector('[onclick="toggleTask(\'tiktok\', \'post1\')"]')?.classList.add('active');
+        if (data.tiktok.post2) document.querySelector('[onclick="toggleTask(\'tiktok\', \'post2\')"]')?.classList.add('active');
+        if (data.pinterest) document.querySelector('[onclick="toggleSingle(\'pinterest\')"]')?.classList.add('active');
+        if (data.snap) document.querySelector('[onclick="toggleSingle(\'snap\')"]')?.classList.add('active');
+        
+        // Mobile usage
+        document.getElementById('mobileSlider').value = data.mobileHours;
+        updateMobileUsage(data.mobileHours);
+        
+        // Finance
+        ['mmm', 'papa', 'original'].forEach(acc => {
+            updateFinanceDisplay(acc);
+        });
+    }
+
+    // Tab Switching
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+    }
+
+    function switchFinanceTab(account) {
+        document.querySelectorAll('.finance-tab').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.finance-content').forEach(content => content.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(`finance-${account}`).classList.add('active');
+    }
+
+    // Toggle Functions
+    function toggleSingle(task) {
+        const btn = event.target;
+        btn.classList.toggle('active');
+        currentDayData[task] = btn.classList.contains('active');
+        
+        if (task === 'mission') {
+            currentDayData.mission.completed = btn.classList.contains('active');
+            currentDayData.mission.text = document.getElementById('missionInput').value;
+        }
+    }
+
+    function toggleTask(category, key) {
+        const btn = event.target;
+        btn.classList.toggle('active');
+        currentDayData[category][key] = btn.classList.contains('active');
+    }
+
+    function toggleNamaz(namaz, type) {
+        const row = document.getElementById(`namaz-row-${namaz}`);
+        const buttons = row.querySelectorAll('.namaz-btn');
+        
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        const clickedBtn = event.target;
+        const wasActive = currentDayData.namaz[namaz] === type;
+        
+        if (!wasActive) {
+            clickedBtn.classList.add('active');
+            currentDayData.namaz[namaz] = type;
+        } else {
+            currentDayData.namaz[namaz] = null;
+        }
+    }
+
+    function toggleQazaOption() {
+        const toggle = document.getElementById('qazaToggle');
+        const counter = document.getElementById('qazaCounter');
+        
+        toggle.classList.toggle('active');
+        currentDayData.qazaEnabled = toggle.classList.contains('active');
+        
+        if (currentDayData.qazaEnabled) {
+            counter.style.display = 'flex';
+            // Show all qaza buttons
+            document.querySelectorAll('.namaz-btn.qaza').forEach(btn => {
+                btn.style.display = 'block';
+            });
+        } else {
+            counter.style.display = 'none';
+            // Hide qaza buttons
+            document.querySelectorAll('.namaz-btn.qaza').forEach(btn => {
+                btn.style.display = 'none';
+            });
+            currentDayData.qazaCompleted = 0;
+            document.getElementById('qazaCount').textContent = '0';
+        }
+    }
+
+    function updateQazaCounter(change) {
+        const newValue = Math.max(0, currentDayData.qazaCompleted + change);
+        currentDayData.qazaCompleted = newValue;
+        document.getElementById('qazaCount').textContent = newValue;
+    }
+
+    function toggleMissionOption() {
+        const toggle = document.getElementById('missionToggle');
+        const btn = document.getElementById('btnMission');
+        
+        toggle.classList.toggle('active');
+        currentDayData.missionEnabled = toggle.classList.contains('active');
+        
+        btn.style.display = currentDayData.missionEnabled ? 'block' : 'none';
+    }
+
+    function toggleM() {
+        const checkbox = document.getElementById('mCheckbox');
+        const status = document.getElementById('mStatus');
+        
+        checkbox.classList.toggle('active');
+        currentDayData.m = checkbox.classList.contains('active');
+        
+        if (currentDayData.m) {
+            status.textContent = '✗ Bad! M done (no bonus)';
+            status.className = 'm-status bad';
+            checkbox.style.background = 'var(--secondary)';
+            checkbox.style.color = 'white';
+        } else {
+            status.textContent = '✓ Good! M avoided (+5 bonus)';
+            status.className = 'm-status good';
+            checkbox.style.background = 'rgba(15,23,42,0.8)';
+            checkbox.style.color = 'var(--secondary)';
+        }
+    }
+
+    function updateMobileUsage(hours) {
+        const value = parseFloat(hours);
+        currentDayData.mobileHours = value;
+        
+        const display = document.getElementById('mobileValue');
+        
+        if (value < 4) {
+            display.textContent = `${value} hours = 3 points`;
+            display.className = 'usage-value usage-good';
+        } else if (value < 8) {
+            display.textContent = `${value} hours = 1 point`;
+            display.className = 'usage-value usage-medium';
+        } else {
+            display.textContent = `${value} hours = 0 points`;
+            display.className = 'usage-value usage-bad';
+        }
+    }
+
+    // Finance Functions
+    function addFinance(account, type) {
+        const desc = document.getElementById(`desc-${account}`).value.trim();
+        const amount = parseFloat(document.getElementById(`amount-${account}`).value) || 0;
+        
+        if (!desc || amount <= 0) {
+            alert('Please enter description and amount!');
+            return;
+        }
+        
+        const transaction = {
+            id: Date.now(),
+            desc,
+            amount,
+            type,
+            time: new Date().toLocaleTimeString()
+        };
+        
+        currentDayData.finance[account][type].push(transaction);
+        
+        if (type === 'income') {
+            currentDayData.finance[account].balance += amount;
+        } else {
+            currentDayData.finance[account].balance -= amount;
+        }
+        
+        // Clear inputs
+        document.getElementById(`desc-${account}`).value = '';
+        document.getElementById(`amount-${account}`).value = '';
+        
+        updateFinanceDisplay(account);
+    }
+
+    function updateFinanceDisplay(account) {
+        const data = currentDayData.finance[account];
+        const balanceEl = document.getElementById(`balance-${account}`);
+        const transactionsEl = document.getElementById(`transactions-${account}`);
+        
+        balanceEl.textContent = '₨' + data.balance.toLocaleString();
+        balanceEl.style.color = data.balance >= 0 ? 'var(--success)' : 'var(--danger)';
+        
+        // Render transactions
+        const allTransactions = [
+            ...data.income.map(t => ({...t, type: 'income'})),
+            ...data.expense.map(t => ({...t, type: 'expense'}))
+        ].sort((a, b) => b.id - a.id);
+        
+        transactionsEl.innerHTML = allTransactions.map(t => `
+            <div class="transaction-item" style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border-left: 4px solid ${t.type === 'income' ? 'var(--success)' : 'var(--danger)'};">
+                <div>
+                    <div style="font-weight: 600;">${t.desc}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${t.time}</div>
+                </div>
+                <div style="font-weight: 700; color: ${t.type === 'income' ? 'var(--success)' : 'var(--danger)'};">
+                    ${t.type === 'income' ? '+' : '-'}₨${t.amount.toLocaleString()}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Calculate Efficiency
+    function calculateEfficiency() {
+        let score = 0;
+        let maxScore = 0;
+        
+        // Health (11 points)
+        if (currentDayData.brush) score += 2;
+        if (currentDayData.facewash) score += 2;
+        if (currentDayData.water) score += 3;
+        if (currentDayData.challenge) score += 3;
+        maxScore += 11;
+        
+        // Namaz (10 points - 5 prayers × 2)
+        Object.entries(currentDayData.namaz).forEach(([namaz, status]) => {
+            if (status === 'ada' || status === 'jummah') score += 2;
+            else if (status === 'qaza' && currentDayData.qazaEnabled) score += 1;
+        });
+        maxScore += 10;
+        
+        // Qaza counter (bonus)
+        if (currentDayData.qazaEnabled) {
+            score += currentDayData.qazaCompleted * 2;
+        }
+        
+        // Spiritual (18 points)
+        if (currentDayData.tahajjud) score += 5;
+        if (currentDayData.dua) score += 5;
+        if (currentDayData.quran) score += 3;
+        if (currentDayData.otp) score += 3;
+        maxScore += 18;
+        
+        // M (5 points if avoided)
+        if (!currentDayData.m) score += 5;
+        maxScore += 5;
+        
+        // Mission (conditional)
+        if (currentDayData.missionEnabled) {
+            if (currentDayData.mission.completed) score += 3;
+            maxScore += 3;
+        }
+        
+        // Work (14 points)
+        if (currentDayData.linkedin) score += 3;
+        if (currentDayData.tiktok.post1) score += 2;
+        if (currentDayData.tiktok.post2) score += 2;
+        if (currentDayData.pinterest) score += 2;
+        if (currentDayData.snap) score += 2;
+        
+        // Mobile usage
+        const hours = currentDayData.mobileHours;
+        if (hours < 4) score += 3;
+        else if (hours < 8) score += 1;
+        
+        maxScore += 14;
+        
+        return Math.round((score / maxScore) * 100) || 0;
+    }
+
+    // Save Day
+    function saveDay() {
+        currentDayData.efficiency = calculateEfficiency();
+        monthlyData[currentDay] = currentDayData;
+        
+        updateDayBadge(currentDay, currentDayData.efficiency);
+        localStorage.setItem('april2026_complete_data', JSON.stringify(monthlyData));
+        
+        updateMonthlyStats();
+        
+        const btn = document.querySelector('.save-btn');
+        btn.innerHTML = '✅ Saved!';
+        setTimeout(() => {
+            btn.innerHTML = '💾 Save Complete Day';
+            closeDetail();
+        }, 1500);
+    }
+
+    function updateDayBadge(dateKey, efficiency) {
+        const badge = document.getElementById(`badge-${dateKey}`);
+        const card = document.getElementById(`day-${dateKey}`);
+        
+        badge.textContent = efficiency + '%';
+        badge.className = 'efficiency-badge';
+        card.classList.add('active');
+        
+        if (efficiency >= 80) badge.classList.add('efficiency-high');
+        else if (efficiency >= 50) badge.classList.add('efficiency-medium');
+        else if (efficiency > 0) badge.classList.add('efficiency-low');
+        else badge.classList.add('efficiency-none');
+    }
+
+    function closeDetail() {
+        document.getElementById('detailPanel').classList.remove('active');
+        currentDay = null;
+        currentDayData = null;
+    }
+
+    // Update Monthly Stats
+    function updateMonthlyStats() {
+        let healthPoints = 0;
+        let namazPoints = 0;
+        let spiritualPoints = 0;
+        let workTasks = 0;
+        let qazaDone = 0;
+        let mAvoided = 0;
+        let totalEfficiency = 0;
+        let daysCount = 0;
+        
+        // Finance totals
+        let mmmBalance = 0;
+        let papaBalance = 0;
+        let originalBalance = 0;
+        
+        Object.values(monthlyData).forEach(day => {
+            // Health
+            if (day.brush) healthPoints += 2;
+            if (day.facewash) healthPoints += 2;
+            if (day.water) healthPoints += 3;
+            if (day.challenge) healthPoints += 3;
+            
+            // Namaz
+            Object.values(day.namaz).forEach(status => {
+                if (status === 'ada' || status === 'jummah') namazPoints += 2;
+                else if (status === 'qaza') namazPoints += 1;
+            });
+            
+            // Spiritual
+            if (day.tahajjud) spiritualPoints += 5;
+            if (day.dua) spiritualPoints += 5;
+            if (day.quran) spiritualPoints += 3;
+            if (day.otp) spiritualPoints += 3;
+            
+            // Qaza
+            qazaDone += day.qazaCompleted || 0;
+            
+            // M
+            if (!day.m) mAvoided++;
+            
+            // Work
+            if (day.linkedin) workTasks++;
+            if (day.tiktok.post1) workTasks++;
+            if (day.tiktok.post2) workTasks++;
+            if (day.pinterest) workTasks++;
+            if (day.snap) workTasks++;
+            
+            // Efficiency
+            if (day.efficiency > 0) {
+                totalEfficiency += day.efficiency;
+                daysCount++;
+            }
+            
+            // Finance (independent accounts)
+            mmmBalance += day.finance?.mmm?.balance || 0;
+            papaBalance += day.finance?.papa?.balance || 0;
+            originalBalance += day.finance?.original?.balance || 0;
+        });
+        
+        // Update display
+        document.getElementById('statHealth').textContent = healthPoints;
+        document.getElementById('statNamaz').textContent = namazPoints;
+        document.getElementById('statSpiritual').textContent = spiritualPoints;
+        document.getElementById('statWork').textContent = workTasks;
+        document.getElementById('statQaza').textContent = qazaDone;
+        document.getElementById('statMAvoided').textContent = mAvoided;
+        
+        document.getElementById('statMMM').textContent = '₨' + mmmBalance.toLocaleString();
+        document.getElementById('statPapa').textContent = '₨' + papaBalance.toLocaleString();
+        document.getElementById('statOriginal').textContent = '₨' + originalBalance.toLocaleString();
+        
+        const avgEff = daysCount ? Math.round(totalEfficiency / daysCount) : 0;
+        document.getElementById('statEfficiency').textContent = avgEff + '%';
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem('april2026_complete_data');
+        if (saved) {
+            monthlyData = JSON.parse(saved);
+            Object.entries(monthlyData).forEach(([date, data]) => {
+                if (data.efficiency > 0) updateDayBadge(date, data.efficiency);
+            });
+        }
+    }
+
+    // Initialize
+    init();
+</script>
+
+</body>
+</html>
